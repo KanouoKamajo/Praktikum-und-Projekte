@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "927495818911",
+    "project_id": "uml-lern-app",
+    "storage_bucket": "uml-lern-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927495818911:android:109fa46f89bab13be79caa",
+        "android_client_info": {
+          "package_name": "com.example.uml_lern_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeljyhN3sI2YP6VsrKMQSsuxcGaeaI8k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
