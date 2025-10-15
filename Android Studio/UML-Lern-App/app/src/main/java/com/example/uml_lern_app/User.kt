@@ -15,4 +15,5 @@ data class User(
     val points: Int = 0,
     val createdAt: Timestamp? = null,
     val lastSeenAt: Timestamp? = null
+
 )
