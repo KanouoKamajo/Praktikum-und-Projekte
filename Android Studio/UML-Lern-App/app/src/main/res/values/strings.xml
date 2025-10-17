@@ -1,4 +1,47 @@
 <resources>
-    <string name="app_name">uml-Lern-App</string>
+
+        <!-- General -->
+        <string name="app_name">UML Lern-App</string>
+        <string name="welcome_message">Willkommen zur IAD UML Lern-App! 🔥</string>
+        <string name="login_title">Anmeldung</string>
+        <string name="hint_username">Benutzername oder E-Mail</string>
+        <string name="hint_password">Passwort</string>
+        <string name="btn_login">Anmelden</string>
+        <string name="btn_guest">Als Gast fortfahren</string>
+        <string name="link_register">Noch kein Konto? Jetzt registrieren!</string>
+
+
+                <!-- Onboarding -->
+        <string name="onb_title">Dein Weg zum UML-Experten: Interaktive Kurse</string>
+        <string name="onb_subtitle"> Entdecke mit der IAD UML Lern-App eine völlig neue Art, Softwaremodellierung zu lernen.
+        Schritt für Schritt wirst du zum UML-Profi:
+        Durch interaktive Kurse, anschauliche Lernmaterialien und praxisnahe Übungen kannst du dein Wissen
+        direkt anwenden und festigen.
+        Ob Grundlagen oder fortgeschrittene Diagramme – die App begleitet dich auf deinem gesamten Lernweg..</string>
+        <string name="onb_next">Weiter</string>
+        <string name="onb_skip">Überspringen</string>
+        <string name="desc_iad_logo">IAD Logo</string>
+
+        <!-- Onboarding Schritt 2 -->
+        <string name="onb2_title">So funktioniert die IAD UML Lern-App</string>
+
+        <!-- Mehrzeilig; \n erzeugt Zeilenumbrüche; • ist das Listenzeichen -->
+        <string name="onb2_points">
+• Starte mit dem Onboarding und verschaffe dir einen Überblick.\n
+• Registriere dich oder melde dich an (Benutzername + Passwort).\n
+• Wähle anschließend einen Kurs aus der Liste (z. B. UML-Grundlagen).\n
+• Öffne die Lernmaterialien: Texte, Bilder und Beispiele – lerne in deinem Tempo.\n
+• Starte das Quiz, um dein Wissen direkt zu prüfen und Punkte zu sammeln.\n
+• Schreibe eigene Notizen zu jedem Kurs und greife später wieder darauf zu.\n
+• Verwalte dein Profil: Anzeigename, Benutzername, Passwort ändern.\n
+• Sende uns Feedback (Ideen, Fehler, Wünsche) – wir verbessern die App laufend.\n
+• Sieh deinen Fortschritt (Level, Punkte) und mache dort weiter, wo du aufgehört hast.\n
+• Du kannst dich jederzeit abmelden – beim nächsten Login geht’s weiter.
+</string>
+
+        <string name="onb2_next">Zu den Kursen</string>
+        <string name="onb2_back">Zurück</string>
+
+
 </resources>
 

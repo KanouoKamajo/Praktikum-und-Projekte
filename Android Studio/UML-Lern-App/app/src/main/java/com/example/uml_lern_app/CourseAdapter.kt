@@ -1,41 +1,29 @@
 package com.example.uml_lern_app
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.uml_lern_app.databinding.ActivityItemCourseBinding
 
-// Adapter verbindet Kursdaten mit den Zeilenansichten der RecyclerView.
 class CourseAdapter(
-    private var items: List<Course>,
-    private val onClick: (Course) -> Unit = {}
-) : RecyclerView.Adapter<CourseAdapter.CourseVH>() {
+    private val items: List<Course>,
+    private val onClick: (Course) -> Unit
+) : RecyclerView.Adapter<CourseAdapter.VH>() {
 
-    // ViewHolder hält Referenzen auf die Views einer Zeile.
-    class CourseVH(v: View) : RecyclerView.ViewHolder(v) {
-        val title: TextView = v.findViewById(R.id.tvCourseTitle)
-        val sub: TextView = v.findViewById(R.id.tvCourseSub)
+    inner class VH(private val b: ActivityItemCourseBinding) : RecyclerView.ViewHolder(b.root) {
+        fun bind(item: Course) {
+            b.tvTitle.text = item.title
+            b.tvSubtitle.text = item.subtitle
+            b.imgIcon.setImageResource(item.iconRes)   // ID muss im XML existieren
+            b.root.setOnClickListener { onClick(item) }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseVH {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_course, parent, false)
-        return CourseVH(v)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val binding = ActivityItemCourseBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(binding)
     }
 
-    override fun onBindViewHolder(holder: CourseVH, position: Int) {
-        val item = items[position]
-        holder.title.text = item.title
-        holder.sub.text = "" // reserviert für spätere Infos (z. B. Units)
-        holder.itemView.setOnClickListener { onClick(item) }
-    }
-
+    override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(items[position])
     override fun getItemCount(): Int = items.size
-
-    // Erlaubt das Ersetzen der Liste (z. B. nach Firestore-Load).
-    fun submitList(newItems: List<Course>) {
-        items = newItems
-        notifyDataSetChanged()
-    }
 }

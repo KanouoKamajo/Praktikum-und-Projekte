@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/iad_white"
+    android:padding="@dimen/onb_padding">
+
+    <!-- 🏫 IAD Logo -->
+    <ImageView
+        android:id="@+id/imgIadLogo"
+        android:layout_width="@dimen/onb_logo_width"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iad_logo"
+        android:contentDescription="@string/desc_iad_logo"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="@dimen/onb_logo_marginTop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 💬 Titel -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/onb2_title"
+        android:textStyle="bold"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/onb_title_size"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/onb_title_marginTop"
+        app:layout_constraintTop_toBottomOf="@id/imgIadLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 🧾 Scrollbarer Textbereich -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_xl"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintBottom_toTopOf="@id/btnNext"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/onb_body_marginTop">
+
+        <LinearLayout
+            android:id="@+id/pointsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layoutAnimation="@anim/layout_slide_fade_in"
+            android:paddingStart="@dimen/onb_body_horizontal_pad"
+            android:paddingEnd="@dimen/onb_body_horizontal_pad">
+
+            <TextView style="@style/OnbPoint" android:text="• Starte mit dem Onboarding und verschaffe dir einen Überblick."/>
+            <TextView style="@style/OnbPoint" android:text="• Registriere dich oder melde dich an (Benutzername + Passwort)."/>
+            <TextView style="@style/OnbPoint" android:text="• Wähle anschließend einen Kurs aus der Liste (z. B. UML-Grundlagen)."/>
+            <TextView style="@style/OnbPoint" android:text="• Öffne Lernmaterialien – lerne in deinem Tempo."/>
+            <TextView style="@style/OnbPoint" android:text="• Starte das Quiz und sammle Punkte."/>
+            <TextView style="@style/OnbPoint" android:text="• Schreibe Notizen zu jedem Kurs."/>
+            <TextView style="@style/OnbPoint" android:text="• Verwalte dein Profil (Name, Benutzername, Passwort)."/>
+            <TextView style="@style/OnbPoint" android:text="• Sende Feedback – wir verbessern die App."/>
+            <TextView style="@style/OnbPoint" android:text="• Sieh deinen Fortschritt (Level, Punkte)."/>
+            <TextView style="@style/OnbPoint" android:text="• Beim nächsten Login geht’s an derselben Stelle weiter."/>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ✅ Weiter (grün) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/onb2_next"
+        android:textAllCaps="false"
+        android:textColor="@color/iad_white"
+        android:backgroundTint="@color/btn_green"
+        app:cornerRadius="@dimen/corner_l"
+        android:layout_marginStart="@dimen/onb_buttons_marginHorizontal"
+        android:layout_marginEnd="@dimen/onb_buttons_marginHorizontal"
+        android:layout_marginBottom="@dimen/onb_next_bottom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnBack" />
+
+    <!-- 🔙 Zurück (rot) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/onb2_back"
+        android:textAllCaps="false"
+        android:textColor="@color/iad_white"
+        android:backgroundTint="@color/btn_red"
+        app:cornerRadius="@dimen/corner_l"
+        android:layout_marginStart="@dimen/onb_buttons_marginHorizontal"
+        android:layout_marginEnd="@dimen/onb_buttons_marginHorizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

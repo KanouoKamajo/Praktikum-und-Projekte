@@ -40,14 +40,14 @@ class ProfileActivity : AppCompatActivity() {
         db.collection("users").document(uid).get()
             .addOnSuccessListener { snap ->
                 // nutzt das KTX-Extension toObject<T>() -> benötigt Import s.o.
-                val user = snap.toObject<User>()
+                val user = snap.toObject<UserActivity>()
                 if (user == null) {
                     binding.tvStatus.text = "Kein User-Dokument gefunden."
                     return@addOnSuccessListener
                 }
 
                 binding.tvDisplayName.text = user.displayName
-                binding.tvEmail.text = user.email
+                //binding.tvEmail.text = user.email
                 binding.tvLevel.text = "Level: ${user.level}"
                 binding.tvPoints.text = "Punkte: ${user.points}"
             }

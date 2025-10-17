@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_register)
 
         // ------------------------------------------------------------------
         // Verbindung zur Firestore-Datenbank wird hergestellt.
@@ -130,10 +130,10 @@ class MainActivity : AppCompatActivity() {
         // Standardcode für die Darstellung von Systemrändern.
         // Diese Zeilen gehören zum Standardprojekt und sind nicht Firestore-bezogen.
         // ------------------------------------------------------------------
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-        }
+        }*/
     }
 }

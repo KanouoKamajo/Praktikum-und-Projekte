@@ -14,17 +14,42 @@
 
         <!-- Unitliste (ohne Launcher) -->
         <activity
-            android:name=".UnitListActivity"
+            android:name=".UnitActivity"
             android:exported="false" />
 
         <!-- Kursliste (ohne Launcher) -->
         <activity
             android:name=".CourseListActivity"
             android:exported="false" />
+        <!-- Profilseite (ohne Launcher) -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <!-- Registrierungsseite (ohne Launcher) -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <!-- Startseite (ohne Launcher) -->
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <!-- Hauptseite (ohne Launcher) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <!-- Detailseite (ohne Launcher) -->
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false" />
+        <!--onboarding2 -Activity (ohne Launcher) -->
+        <activity
+            android:name=".OnboardingStep2Activity"
+            android:exported="false" />
+        <!-- Login-Activity (ohne Launcher) -->
 
         <!-- Start-Activity der App -->
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

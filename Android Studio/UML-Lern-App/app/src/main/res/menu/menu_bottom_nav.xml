@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_courses"
+        android:title="Kurse"
+        android:icon="@drawable/ic_cours_red"/>
+    <item
+        android:id="@+id/nav_quiz"
+        android:title="Quiz"
+        android:icon="@drawable/ic_quiz"/>
+    <item
+        android:id="@+id/nav_notes"
+        android:title="Notizen"
+        android:icon="@drawable/ic_notes"/>
+    <item
+        android:id="@+id/nav_admin"
+        android:title="Admin"
+        android:icon="@drawable/ic_admin"/>
+</menu>

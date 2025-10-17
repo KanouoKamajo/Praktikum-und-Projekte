@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-</resources>
+
+
+    <resources>
+        <color name="white">#FFFFFFFF</color>!-- IAD Corporate Design Farben -->
+        <color name="iad_red">#C62828</color>          <!-- Hauptrot -->
+        <color name="iad_red_dark">#8E0000</color>    <!-- Dunkleres Rot für Akzente -->
+        <color name="iad_white">#FFFFFF</color>       <!-- Weiß -->
+        <color name="iad_gray">#F5F5F5</color>        <!-- Hellgrau für Hintergründe --><!-- Standard Schwarz -->
+        <color name="error_red">#B00020</color>       <!-- Standard-Fehlerfarbe -->
+        <color name="background_light">#E9F0EE</color>
+        <color name="text_black">#000000</color>
+        <color name="btn_green">#2E7D32</color>
+        <color name="btn_red">#C62828</color>
+        <color name="text_gray">#555555</color>
+        <color name="btn_light">#E9F0EE</color>     <!-- 🌿 Buttonfarbe -->
+        <color name="text_black2">#222222</color>
+
+    </resources>
+

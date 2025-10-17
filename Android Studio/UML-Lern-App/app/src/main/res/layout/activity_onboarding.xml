@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light"
+    android:padding="24dp">
+
+    <!-- 🔺 Logo oben (wird von tvTitle referenziert!) -->
+
+    <!-- 🌟 Haupttitel – größer & sehr gut lesbar -->
+    <!-- IAD-Logo oben -->
+    <ImageView
+        android:id="@+id/iad_logo"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iad_logo"
+        android:contentDescription="@string/desc_iad_logo"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="48dp" />
+
+
+
+    <!-- 📘 Vorstellungstext – größer, mehr Zeilenabstand -->
+
+    <!-- ✅ Weiter-Button – grün, enger Abstand -->
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="@string/onb_title"
+        android:textColor="@color/text_black"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iad_logo" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="369dp"
+        android:layout_height="261dp"
+        android:layout_marginTop="52dp"
+        android:alpha="0.95"
+        android:gravity="center"
+        android:lineSpacingExtra="6dp"
+        android:text="@string/onb_subtitle"
+        android:textColor="@color/text_black"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnWeiter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/onb_next"
+        android:textAllCaps="false"
+        android:textColor="@color/iad_white"
+        android:backgroundTint="@color/btn_green"
+        app:cornerRadius="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvSkip" />
+
+    <!-- ↘️ Überspringen – schwarz, nah am Button -->
+    <!-- 🔘 Logout-Button unten neben „Überspringen“ -->
+    <TextView
+        android:id="@+id/tvSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/onb_skip"
+        android:textColor="@color/text_black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.635"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnWeiter" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/btn_red"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="Abmelden"
+        android:textAllCaps="false"
+        android:textColor="@color/iad_white"
+        android:textSize="13sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/tvSkip"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnWeiter" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

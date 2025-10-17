@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing / Padding -->
+    <dimen name="spacing_xs">6dp</dimen>
+    <dimen name="spacing_s">8dp</dimen>
+    <dimen name="spacing_m">12dp</dimen>
+    <dimen name="spacing_l">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+
+    <!-- Onboarding: gemeinsame Dimens -->
+    <dimen name="onb_padding">16dp</dimen>
+    <dimen name="onb_logo_marginTop">32dp</dimen>
+    <dimen name="onb_title_marginTop">16dp</dimen>
+    <dimen name="onb_body_marginTop">12dp</dimen>
+    <dimen name="onb_buttons_marginHorizontal">16dp</dimen>
+    <dimen name="onb_next_bottom">8dp</dimen>
+
+    <dimen name="onb_logo_width">160dp</dimen>
+    <dimen name="onb_title_size">22sp</dimen>
+    <dimen name="onb_body_size">15sp</dimen>
+    <dimen name="onb_body_line_spacing">6dp</dimen>
+    <dimen name="onb_body_horizontal_pad">8dp</dimen>
+
+    <!-- Weitere, aus deinem ersten Layout -->
+    <dimen name="logo_size">160dp</dimen>
+    <dimen name="line_spacing">6dp</dimen>
+    <dimen name="text_title">26sp</dimen>
+    <dimen name="text_body">17sp</dimen>
+    <dimen name="text_small">13sp</dimen>
+    <dimen name="corner_m">12dp</dimen>
+    <dimen name="corner_l">16dp</dimen>
+    <dimen name="pad_h_small_btn">12dp</dimen>
+    <dimen name="pad_v_small_btn">6dp</dimen>
+</resources>
