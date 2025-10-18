@@ -19,12 +19,10 @@
 
         <!-- Kursliste (ohne Launcher) -->
         <activity
-            android:name=".CourseListActivity"
+            android:name=".CourseActivity"
             android:exported="false" />
-        <!-- Profilseite (ohne Launcher) -->
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
+
+
         <!-- Registrierungsseite (ohne Launcher) -->
         <activity
             android:name=".RegisterActivity"
@@ -46,6 +44,12 @@
             android:name=".OnboardingStep2Activity"
             android:exported="false" />
         <!-- Login-Activity (ohne Launcher) -->
+<!-- quiz activity (ohne Launcher) -->
+       <activity
+            android:name=".QuizActivity"
+            android:exported="false" />
+
+
 
         <!-- Start-Activity der App -->
         <activity

@@ -28,8 +28,11 @@ class OnboardingStep2Activity : AppCompatActivity() {
 
         // ▶️ Weiter → öffnet Kursübersicht
         binding.btnNext.setOnClickListener {
-            startActivity(Intent(this, CourseActivity::class.java))
-            finish()
+            val intent = Intent(this, CourseActivity::class.java)
+            startActivity(intent)
+            finish() // optional: schließt OnboardingStep2, damit man nicht zurückkommt
         }
+
+
     }
 }

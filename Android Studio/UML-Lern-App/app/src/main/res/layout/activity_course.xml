@@ -32,6 +32,8 @@
             android:textSize="24sp"/>
     </LinearLayout>
 
+
+
     <!-- 🧭 Kursliste -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCourses"
@@ -40,6 +42,37 @@
         android:layout_weight="1"
         android:padding="12dp"
         android:clipToPadding="false"/>
+
+    <!-- Hinweistext über den Kursen -->
+    <TextView
+        android:id="@+id/tvHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bitte wählen Sie einen Kurs aus, um fortzufahren."
+        android:textColor="#AA000000"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:textSize="16sp"
+        android:gravity="center" />
+
+    <!-- RecyclerView für Kursliste -->
+
+    <!-- Zurück-Button unten -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Zurück"
+        android:textAllCaps="false"
+        android:textColor="@color/iad_white"
+        android:backgroundTint="@color/btn_red"
+        app:cornerRadius="16dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <!-- ⚙️ Navigation unten -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

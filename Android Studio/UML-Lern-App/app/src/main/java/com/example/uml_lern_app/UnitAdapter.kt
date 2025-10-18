@@ -1,38 +1,36 @@
 package com.example.uml_lern_app
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.uml_lern_app.databinding.ItemUnitActivityBinding
 
 class UnitAdapter(
-    private var items: List<UnitItem>,
-    private val onClick: (UnitItem) -> Unit = {}
-) : RecyclerView.Adapter<UnitAdapter.UnitVH>() {
+    private val units: List<UnitItem>,
+    private val onClick: (UnitItem) -> Unit
+) : RecyclerView.Adapter<UnitAdapter.UnitViewHolder>() {
 
-    class UnitVH(v: View) : RecyclerView.ViewHolder(v) {
-        val title: TextView = v.findViewById(R.id.tvUnitTitle)
-        val sub: TextView = v.findViewById(R.id.tvUnitSub)
+    inner class UnitViewHolder(val binding: ItemUnitActivityBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UnitViewHolder {
+        val binding = ItemUnitActivityBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return UnitViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UnitVH {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_unit, parent, false)
-        return UnitVH(v)
+    override fun onBindViewHolder(holder: UnitViewHolder, position: Int) {
+        val item = units[position]
+        holder.binding.tvUnitTitle.text = item.title
+        holder.binding.tvUnitDescription.text = item.description
+        holder.binding.tvUnitDuration.text = "Dauer: ${item.duration}"
+
+        // Klick auf eine Unit
+        holder.binding.root.setOnClickListener { onClick(item) }
     }
 
-    override fun onBindViewHolder(holder: UnitVH, position: Int) {
-        val item = items[position]
-        holder.title.text = item.title
-        holder.sub.text = "" // z. B. "5 Fragen" – später
-        holder.itemView.setOnClickListener { onClick(item) }
-    }
-
-    override fun getItemCount(): Int = items.size
-
-    fun submitList(newItems: List<UnitItem>) {
-        items = newItems
-        notifyDataSetChanged()
-    }
+    override fun getItemCount(): Int = units.size
 }

@@ -41,6 +41,16 @@
 
         <string name="onb2_next">Zu den Kursen</string>
         <string name="onb2_back">Zurück</string>
+        <string name="admin_title">Adminbereich – Quizdaten</string>
+        <string name="admin_json_hint">JSON der Fragen hier einfügen…</string>
+        <string name="admin_load">Laden</string>
+        <string name="admin_save">Speichern</string>
+        <string name="admin_back">Zurück</string>
+        <string name="profile_title">Profil</string>
+        <string name="profile_points_placeholder">Ihre Punkte: 0</string>
+        <string name="profile_reset_points">Punkte zuruecksetzen</string>
+        <string name="common_back">Zurueck</string>
+
 
 
 </resources>

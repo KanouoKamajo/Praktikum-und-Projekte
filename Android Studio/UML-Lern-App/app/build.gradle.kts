@@ -49,6 +49,8 @@ dependencies {
 
     // 🔹 Firestore (KTX – enthält u. a. .toObject<T>())
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.android.material:material:1.11.0")
+
 
     // Deine bisherigen Android-Dependencies
     implementation(libs.androidx.core.ktx)

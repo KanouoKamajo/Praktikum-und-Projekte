@@ -38,13 +38,12 @@ class OnboardingActivity : AppCompatActivity() {
         }
 
 
-        // ⏩ "Überspringen" → öffnet direkt die Kursseite
         binding.tvSkip.setOnClickListener {
             val intent = Intent(this, CourseActivity::class.java)
             startActivity(intent)
-            //finish() // beendet Onboarding
-
+            finish() // optional, siehe oben
         }
+
 
         // 3️⃣ Logout → zurück zur Login-Seite und Benutzer abmelden
         binding.btnLogout.setOnClickListener {
