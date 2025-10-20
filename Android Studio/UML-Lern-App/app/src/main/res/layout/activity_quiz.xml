@@ -92,6 +92,13 @@
             android:backgroundTint="@color/btn_red"
             app:cornerRadius="16dp"
             android:layout_marginTop="12dp" />
+        <Button
+            android:id="@+id/btnErrorList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fehlerliste anzeigen"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"/>
 
     </LinearLayout>
 </ScrollView>

@@ -1,7 +1,9 @@
 package com.example.uml_lern_app
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +18,11 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var binding: ActivityQuizBinding
 
     // Fragen-Logik
-    private var fullPool: List<QuizQuestion> = emptyList()  // kompletter Pool (für courseId)
-    private var questions: MutableList<QuizQuestion> = mutableListOf() // eigentliche Session-Fragen
+    private var fullPool: List<QuizQuestion> = emptyList()
+    private var questions: MutableList<QuizQuestion> = mutableListOf()
     private var currentIndex = 0
     private var score = 0
+    private var isResultMode = false
 
     // Keys
     private val STATE_INDEX = "state_index"
@@ -27,8 +30,9 @@ class QuizActivity : AppCompatActivity() {
 
     // Persistence
     private val PREFS = "quiz_prefs"
-    private val KEY_WRONG_PREFIX = "wrong_"            // + courseId → JSON-Array von Frage-Strings
+    private val KEY_WRONG_PREFIX = "wrong_"            // + courseId
     private val KEY_PROFILE_POINTS = "profile_points"  // Gesamtpunkte
+    private val KEY_PASSED_PREFIX = "passed_"          // + unitId -> Boolean (Level-Lock)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,21 +47,17 @@ class QuizActivity : AppCompatActivity() {
         fullPool = loadQuestions(courseId)
 
         // 2) Falsche Fragen aus vorheriger Session laden (werden zuerst geübt)
-        val previouslyWrong = loadWrongSet(courseId)   // Set<String> (Fragetexte)
+        val previouslyWrong = loadWrongSet(courseId)
 
-        // 3) gewünschte Anzahl: per Intent oder später per Dialog (Text-Eingabe)
+        // 3) gewünschte Anzahl: per Intent oder per Dialog
         val requestedCount = intent.getIntExtra("questionCount", -1)
 
         if (savedInstanceState == null) {
-            // Session-Fragen vorbereiten (zuerst falsche, dann Rest auffüllen)
             questions = buildSessionQuestions(previouslyWrong, fullPool)
-
             if (requestedCount in 1..questions.size) {
-                // Wenn eine gültige Anzahl vorgegeben wurde → auf diese Anzahl begrenzen
                 questions = questions.take(requestedCount).toMutableList()
                 showQuestion()
             } else {
-                // Dialog mit Textfeld: User tippt die Anzahl (statt Auswahl)
                 promptForQuestionCount(questions.size) { chosen ->
                     questions = questions.take(chosen).toMutableList()
                     showQuestion()
@@ -66,7 +66,6 @@ class QuizActivity : AppCompatActivity() {
         } else {
             currentIndex = savedInstanceState.getInt(STATE_INDEX, 0)
             score = savedInstanceState.getInt(STATE_SCORE, 0)
-            // Für „ohne große Änderungen“: baue Session erneut (Reihenfolge kann variieren bei Rotation)
             questions = buildSessionQuestions(previouslyWrong, fullPool)
             if (requestedCount in 1..questions.size) {
                 questions = questions.take(requestedCount).toMutableList()
@@ -74,8 +73,20 @@ class QuizActivity : AppCompatActivity() {
             showQuestion()
         }
 
-        // Weiter/Ergebnis
+        // EINZIGER Listener: behandelt Weiter ODER Fertig
         binding.btnNext.setOnClickListener {
+            if (isResultMode) {
+                // "Fertig" → zurück zur Kursübersicht
+                val i = Intent(this, CourseActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("courseId", courseId) // optional
+                }
+                startActivity(i)
+                finish()
+                return@setOnClickListener
+            }
+
+            // Normaler Weiter-Flow
             val checkedId = binding.rgOptions.checkedRadioButtonId
             if (checkedId == -1) {
                 Toast.makeText(this, "Bitte eine Antwort wählen!", Toast.LENGTH_SHORT).show()
@@ -85,49 +96,38 @@ class QuizActivity : AppCompatActivity() {
             val selectedIndex = binding.rgOptions.indexOfChild(findViewById<RadioButton>(checkedId))
             val currentQ = questions[currentIndex]
 
-            // Treffer werten + falsche Frage persistieren/entfernen
             val correct = (selectedIndex == currentQ.correctIndex)
             if (correct) {
                 score++
-                removeWrong(currentQ.question, courseId) // war evtl. vorher falsch gespeichert → entfernen
+                removeWrong(currentQ.question, courseId)
             } else {
-                saveWrong(currentQ.question, courseId)   // als falsch merken
+                saveWrong(currentQ.question, courseId)
             }
 
             currentIndex++
             if (currentIndex < questions.size) showQuestion() else showResult(courseId)
         }
 
-        // Zurück vom Ergebnis
-        binding.btnBack.setOnClickListener {
-            finish() // zurück zur Unit-Seite
-        }
+        // Zurück (vom Ergebnis) → zurück zur Unit
+        binding.btnBack.setOnClickListener { finish() }
     }
 
-    /**
-     * Erstellt die Session-Fragen:
-     * - zuerst alle zuvor falsch beantworteten (falls noch im Pool vorhanden),
-     * - dann die restlichen gemischt.
-     */
+    /** Erstellt die Session-Fragen: zuerst falsch beantwortete, dann Rest gemischt. */
     private fun buildSessionQuestions(previouslyWrong: Set<String>, pool: List<QuizQuestion>): MutableList<QuizQuestion> {
         val wrongFirst = pool.filter { it.question in previouslyWrong }
         val rest = pool.filter { it.question !in previouslyWrong }.shuffled()
         return (wrongFirst + rest).toMutableList()
     }
 
-    /**
-     * Dialog mit Textfeld (Zahl) – User gibt die gewünschte Anzahl an.
-     * Begrenzung: 1..maxCount
-     */
+    /** Dialog: User wählt Anzahl Fragen. */
     private fun promptForQuestionCount(maxCount: Int, onChosen: (Int) -> Unit) {
-        // TextInput programmatisch erstellen (kein extra XML nötig)
         val til = TextInputLayout(this).apply {
             isHintEnabled = true
             hint = "Anzahl Fragen (1–$maxCount)"
         }
         val et = TextInputEditText(this).apply {
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
-            setText(minOf(5, maxCount).toString()) // Vorschlag: 5 oder weniger
+            setText(minOf(5, maxCount).toString())
         }
         til.addView(et)
 
@@ -137,23 +137,21 @@ class QuizActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 val raw = et.text?.toString()?.trim().orEmpty()
                 val n = raw.toIntOrNull() ?: maxCount
-                val clamped = n.coerceIn(1, maxCount)
-                onChosen(clamped)
+                onChosen(n.coerceIn(1, maxCount))
             }
-            .setNegativeButton("Alle") { _, _ ->
-                onChosen(maxCount)
-            }
+            .setNegativeButton("Alle") { _, _ -> onChosen(maxCount) }
             .setCancelable(false)
             .show()
     }
 
-    /** Zeigt aktuelle Frage + aktualisiert ProgressBar. */
+    /** Aktuelle Frage anzeigen. */
     private fun showQuestion() {
+        isResultMode = false
+
         val q = questions[currentIndex]
         binding.tvQuestion.text = q.question
         binding.tvProgress.text = "Frage ${currentIndex + 1} / ${questions.size}"
 
-        // ProgressBar: 0..100
         val progress = ((currentIndex) * 100f / questions.size).toInt()
         binding.progressBar.progress = progress
 
@@ -169,32 +167,48 @@ class QuizActivity : AppCompatActivity() {
         binding.tvResult.text = ""
         binding.rgOptions.clearCheck()
         binding.btnNext.text = if (currentIndex == questions.size - 1) "Ergebnis anzeigen" else "Weiter"
-        binding.btnBack.visibility = android.view.View.GONE
+        binding.btnBack.visibility = View.GONE
+        binding.btnNext.isEnabled = true
+
+        // Ergebnis-spezifische Buttons ausblenden (falls vorhanden)
+        runCatching { binding.btnErrorList.visibility = View.GONE }
     }
 
-    /** Ergebnis anzeigen, Punkte speichern, ProgressBar auf 100 setzen, Zurück-Button zeigen. */
+    /** Ergebnis anzeigen, Punkte & „bestanden“ speichern; Button wird zu "Fertig". */
     private fun showResult(courseId: String) {
+        isResultMode = true
+
+        val unitId = intent.getStringExtra("unitId").orEmpty()
+        val percent = if (questions.isNotEmpty()) (score * 100) / questions.size else 0
+        val passed = percent >= 70
+        markUnitPassed(unitId, passed)
+
         binding.tvQuestion.text = "Ergebnis"
         binding.rgOptions.removeAllViews()
-        binding.btnNext.isEnabled = false
+
+        binding.btnNext.isEnabled = true
         binding.btnNext.text = "Fertig"
+
         binding.tvProgress.text = ""
         binding.progressBar.progress = 100
+        binding.tvResult.text = "Richtig: $score / ${questions.size}  •  $percent%  •  ${if (passed) "Bestanden" else "Nicht bestanden"}"
 
-        binding.tvResult.text = "Sie haben $score von ${questions.size} richtig beantwortet."
-
-        // Punkte im „Profil“ addieren (einfaches Beispiel: Summe aller erzielten Punkte)
         addProfilePoints(score)
+        binding.btnBack.visibility = View.VISIBLE
 
-        // „Zurück“-Button sichtbar machen
-        binding.btnBack.visibility = android.view.View.VISIBLE
+        // Fehlerliste-Button (nur wenn im Layout vorhanden)
+        runCatching {
+            binding.btnErrorList.visibility = View.VISIBLE
+            binding.btnErrorList.setOnClickListener {
+                startActivity(Intent(this, ErrorListActivity::class.java))
+            }
+        }
     }
 
     // ---------------------- Persistence: falsche Fragen je Kurs ----------------------
 
     private fun prefs() = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    /** Lädt Set der falsch beantworteten Fragen (nach Fragetext) für einen Kurs. */
     private fun loadWrongSet(courseId: String): Set<String> {
         val key = KEY_WRONG_PREFIX + courseId
         val json = prefs().getString(key, "[]") ?: "[]"
@@ -204,7 +218,6 @@ class QuizActivity : AppCompatActivity() {
         return set
     }
 
-    /** Speichert/mergt eine falsche Frage in die Liste. */
     private fun saveWrong(questionText: String, courseId: String) {
         val key = KEY_WRONG_PREFIX + courseId
         val set = loadWrongSet(courseId).toMutableSet()
@@ -214,7 +227,6 @@ class QuizActivity : AppCompatActivity() {
         prefs().edit().putString(key, arr.toString()).apply()
     }
 
-    /** Entfernt eine Frage aus der „falsch“-Liste (wenn sie korrekt beantwortet wurde). */
     private fun removeWrong(questionText: String, courseId: String) {
         val key = KEY_WRONG_PREFIX + courseId
         val set = loadWrongSet(courseId).toMutableSet()
@@ -225,16 +237,19 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
-    // ---------------------- Punkte im „Profil“ (SharedPreferences) ----------------------
+    // ---------------------- Punkte & Level-Lock ----------------------
 
     private fun addProfilePoints(delta: Int) {
         val current = prefs().getInt(KEY_PROFILE_POINTS, 0)
         prefs().edit().putInt(KEY_PROFILE_POINTS, current + delta).apply()
-        // Optional: Toast als Feedback
-        // Toast.makeText(this, "Punkte gesamt: ${current + delta}", Toast.LENGTH_SHORT).show()
     }
 
-    // ---------------------- Fragen & Titel (wie zuvor) ----------------------
+    private fun markUnitPassed(unitId: String, passed: Boolean) {
+        if (unitId.isBlank()) return
+        prefs().edit().putBoolean(KEY_PASSED_PREFIX + unitId, passed).apply()
+    }
+
+    // ---------------------- Fragen & Titel ----------------------
 
     private fun loadQuestions(courseId: String): List<QuizQuestion> {
         return when (courseId) {

@@ -49,6 +49,16 @@
             android:text="Hier könnte eine Beschreibung des Lernmaterials stehen."
             android:textColor="#80000000"
             android:textSize="14sp"/>
+        <!-- Oberhalb/Lateral deiner Unit-Liste einfügen -->
+        <Button
+            android:id="@+id/btnOpenNotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:backgroundTint="@color/background_light"
+            android:text="Notiz hinzufügen"
+            android:textColor="@color/text_black" />
+
 
         <!-- 🔘 Quiz starten -->
         <com.google.android.material.button.MaterialButton

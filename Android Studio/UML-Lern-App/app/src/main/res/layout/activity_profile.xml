@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="96dp" android:layout_height="96dp"
+            android:src="@mipmap/ic_launcher_round" android:contentDescription="Profilbild"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="User" android:textSize="20sp"
+            android:layout_marginTop="12dp" android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvPoints"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Punkte: 0" android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvLevel"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Level: 0 / 3" android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/tvProgress"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="–" android:layout_marginTop="12dp"/>
+
+        <Button
+            android:id="@+id/btnResetProgress"
+            android:backgroundTint="@color/background_light"
+            android:textColor="@color/text_black"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="Fortschritt zurücksetzen" android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:backgroundTint="@color/btn_red"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="Zurück" android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <!-- Titel -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Adminbereich"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/iad_red"
+        android:paddingBottom="8dp"/>
+
+    <!-- Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/TextAppearance.Material3.LabelLarge"
+        app:tabIndicatorColor="@color/iad_red"
+        app:tabIndicatorFullWidth="false"
+        app:tabSelectedTextColor="@color/iad_red"
+        app:tabTextColor="@color/iad_grey_dark"
+        android:background="@color/white"/>
+
+    <!-- Liste -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvItems"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="12dp"
+        android:scrollbars="vertical"
+        android:clipToPadding="false"/>
+
+    <!-- Aktionsbereich unten -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="8dp">
+
+        <!-- Moderner runder Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="+ Kurs"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            app:cornerRadius="24dp"
+            android:paddingHorizontal="20dp"
+            android:elevation="4dp"
+            android:layout_gravity="end"
+            android:backgroundTint="@color/iad_red" />
+    </LinearLayout>
+
+</LinearLayout>

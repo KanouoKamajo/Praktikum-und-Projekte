@@ -11,10 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UmlLernApp">
-
+        <!-- Aktivitäten der App -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+<!-- Admin-Seite (ohne Launcher) -->
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
+        <!-- Fragen-Seite (ohne Launcher) -->
+        <activity
+            android:name=".QuestionsAdminActivity"
+            android:exported="false" />
         <!-- Unitliste (ohne Launcher) -->
         <activity
             android:name=".UnitActivity"
+            android:exported="false" />
+        <!-- Detailseite für eine Lerneinheit (ohne Launcher) -->
+        <activity
+            android:name=".NotesActivity"
+            android:exported="false" />
+        <!-- Fehlerliste (ohne Launcher) -->
+        <activity
+            android:name=".ErrorListActivity"
             android:exported="false" />
 
         <!-- Kursliste (ohne Launcher) -->

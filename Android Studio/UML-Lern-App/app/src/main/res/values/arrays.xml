@@ -1,0 +1,12 @@
+<resources>
+    <string-array name="notes_filters">
+        <item>Alle</item>
+        <item>Diese Unit</item>
+        <item>Diese Frage</item>
+
+
+
+
+
+</string-array>
+    </resources>

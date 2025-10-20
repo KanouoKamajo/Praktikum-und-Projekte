@@ -1,5 +1,6 @@
 package com.example.uml_lern_app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { fehler ->
                 Log.e("ATTEMPT", "Fehler beim Schreiben", fehler)
             }
+        startActivity(Intent(this, NotesActivity::class.java))
 
         // ------------------------------------------------------------------
 // Lese-Test (Units): Abfrage aller Units eines Kurses.

@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uml_lern_app.databinding.ActivityCourseBinding
-import kotlin.jvm.java
 
 class CourseActivity : AppCompatActivity() {
 
@@ -19,14 +18,12 @@ class CourseActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // ---------------------------------------
-        // 1) UI: Zurück-Button unten
+        // 1) Zurück-Button
         // ---------------------------------------
-        binding.btnBack.setOnClickListener {
-            finish() // zurück zur vorherigen Seite (z. B. Onboarding Step 2)
-        }
+        binding.btnBack.setOnClickListener { finish() }
 
         // ---------------------------------------
-        // 2) Datenquelle: Kurse (jede ID hat später eigenen Inhalt)
+        // 2) Kursliste
         // ---------------------------------------
         val courses = listOf(
             Course(
@@ -49,63 +46,88 @@ class CourseActivity : AppCompatActivity() {
             )
         )
 
-        // ---------------------------------------
-        // 3) RecyclerView einrichten
-        // ---------------------------------------
         binding.rvCourses.apply {
             layoutManager = LinearLayoutManager(this@CourseActivity)
             adapter = CourseAdapter(courses) { clicked ->
-                // Hinweistext ausblenden, sobald etwas gewählt wurde
                 binding.tvHint.visibility = View.GONE
-
-                // zur UnitActivity mit kurs-spezifischer ID
-                startActivity(
-                    Intent(this@CourseActivity, UnitActivity::class.java)
-                        .putExtra("courseId", clicked.id)
-                )
+                // → direkt zur UnitActivity (mit Level-Kette)
+                openUnit(clicked.id)
             }
         }
 
         // ---------------------------------------
-        // 4) Optional: BottomNavigation (falls im Layout vorhanden)
+        // 3) BottomNavigation (mit Profil)
+        //    Erwartet ein Menü mit IDs: nav_courses, nav_quiz, nav_notes, nav_profile, nav_admin
         // ---------------------------------------
-        // Nur setzen, wenn es die View in deinem Layout gibt:
-        binding.root.findViewById<View?>(R.id.bottomNav)?.let { _ ->
-            // aktiven Tab optisch markieren (sofern du das Menü nutzt)
-            // (cast vermeiden, wir setzen nur das Checked-Item über Menu)
+        binding.root.findViewById<View?>(R.id.bottomNav)?.let {
             try {
-                val bn = com.google.android.material.bottomnavigation.BottomNavigationView::class.java
-                    .cast(findViewById(R.id.bottomNav))
-                bn.selectedItemId = R.id.nav_courses
-                bn.setOnItemSelectedListener { item ->
+                val bottom = com.google.android.material.bottomnavigation.BottomNavigationView::class.java
+                    .cast(it)
+
+                bottom.selectedItemId = R.id.nav_courses
+
+                bottom.setOnItemSelectedListener { item ->
                     when (item.itemId) {
-                        R.id.nav_courses -> true // schon hier
+                        R.id.nav_courses -> true // bereits hier
+
                         R.id.nav_quiz -> {
-                            Toast.makeText(this, "Quiz kommt später 👀", Toast.LENGTH_SHORT).show()
+                            // Standard: erstes Level öffnen (oder passe an)
+                            openUnit("uml_basics")
                             true
                         }
+
                         R.id.nav_notes -> {
-                            Toast.makeText(this, "Notizen kommen später 📝", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, NotesActivity::class.java).apply {
+                                putExtra("courseId", "uml_basics")
+                                putExtra("unitId", "uml_basics")
+                            })
                             true
                         }
+
+                        R.id.nav_profile -> {
+                            startActivity(Intent(this, ProfileActivity::class.java))
+                            true
+                        }
+
                         R.id.nav_admin -> {
-                            Toast.makeText(this, "Admin-Bereich ⚙️", Toast.LENGTH_SHORT).show()
+                            // Placeholder – Activity anlegen, damit kein Crash
+                            startActivity(Intent(this, AdminActivity::class.java))
                             true
                         }
+
                         else -> false
                     }
                 }
             } catch (_: Throwable) {
-                // ignorieren – BottomNav ist optional
+                // BottomNav ist optional – kein Crash
             }
         }
 
         // ---------------------------------------
-        // 5) Hinweistext in „Sie“-Form (falls nicht statisch im XML)
+        // 4) Hinweistext (falls nicht im XML gesetzt)
         // ---------------------------------------
-        // Wenn du den Text bereits im XML gesetzt hast, kannst du diesen Block entfernen.
         if (binding.tvHint.text.isNullOrBlank()) {
             binding.tvHint.text = "Bitte wählen Sie einen Kurs aus, um fortzufahren."
         }
+    }
+
+    // ---------- Navigation-Helfer ----------
+
+    private fun openUnit(unitId: String) {
+        val prevId = when (unitId) {
+            "uml_basics"   -> null
+            "uml_advanced" -> "uml_basics"
+            "uml_practice" -> "uml_advanced"
+            else -> null
+        }
+
+        startActivity(
+            Intent(this, UnitActivity::class.java).apply {
+                // In deinem Projekt sind Kurs- und Unit-IDs identisch → beides setzen
+                putExtra("courseId", unitId)
+                putExtra("unitId", unitId)
+                if (prevId != null) putExtra("prevUnitId", prevId)
+            }
+        )
     }
 }

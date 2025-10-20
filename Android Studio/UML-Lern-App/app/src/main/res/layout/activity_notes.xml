@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootNotes"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp">
+
+    <!-- Filter: Alle | Diese Unit | Diese Frage -->
+    <Spinner
+        android:id="@+id/spFilter"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:entries="@array/notes_filters"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnAdd" />
+
+    <!-- Neue Notiz hinzufügen -->
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:minWidth="96dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:text="@string/notes_new"
+        app:layout_constraintBottom_toBottomOf="@id/spFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/spFilter"
+        app:layout_constraintTop_toTopOf="@id/spFilter" />
+
+    <!-- Eingabefeld (im Edit-Modus sichtbar) -->
+    <EditText
+        android:id="@+id/etNote"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/notes_add_hint"
+        android:minHeight="48dp"
+        android:gravity="top"
+        android:visibility="gone"
+        android:inputType="textMultiLine"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/spFilter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSave" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:minWidth="96dp"
+        android:text="@string/notes_save"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/etNote"
+        app:layout_constraintBottom_toBottomOf="@id/etNote"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Liste der Notizen -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvNotes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/etNote"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnBackToUnit"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnBackToUnit"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/btn_red"
+        android:text="Zurück zur Unit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvNotes" />
+
+    <Button
+        android:id="@+id/btnFinishNotes"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/background_light"
+        android:text="Fertig"
+        android:textColor="@color/text_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBackToUnit"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

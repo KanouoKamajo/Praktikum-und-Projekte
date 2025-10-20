@@ -50,6 +50,15 @@
         <string name="profile_points_placeholder">Ihre Punkte: 0</string>
         <string name="profile_reset_points">Punkte zuruecksetzen</string>
         <string name="common_back">Zurueck</string>
+        <string name="notes_new">Neu</string>
+        <string name="notes_save">Speichern</string>
+        <string name="notes_edit">Bearb.</string>
+        <string name="notes_delete">Löschen</string>
+        <string name="notes_add_hint">Notiz schreiben…</string>
+
+
+
+
 
 
 
