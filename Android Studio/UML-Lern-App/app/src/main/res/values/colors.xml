@@ -16,7 +16,11 @@
         <color name="btn_light">#E9F0EE</color>     <!-- 🌿 Buttonfarbe -->
         <color name="text_black2">#222222</color>
         <color name="iad_grey_dark">#666666</color>
+        <color name="iad_green_primary">#4CAF50</color>
+        <color name="iad_green_light">#B2F2BB</color>
+        <color name="iad_green_soft">#A8E6CF</color>
 
 
-    </resources>
+
+</resources>
 

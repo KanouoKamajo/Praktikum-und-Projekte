@@ -53,10 +53,12 @@ class QuestionsAdminActivity : AppCompatActivity() {
     }
 
     private fun subscribeQuestions() {
+        showLoading(true)
         db.collection("courses").document(courseId)
             .collection("questions")
             .orderBy("text", Query.Direction.ASCENDING)
             .addSnapshotListener { snap, err ->
+                showLoading(false)
                 if (err != null) {
                     Toast.makeText(this, "Laden fehlgeschlagen: ${err.message}", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
@@ -71,6 +73,7 @@ class QuestionsAdminActivity : AppCompatActivity() {
                     )
                 }
                 adapter.notifyDataSetChanged()
+                binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
             }
     }
 
@@ -98,7 +101,12 @@ class QuestionsAdminActivity : AppCompatActivity() {
     }
 
     private fun showAddEditDialog(existing: QA?) {
-        val etText = EditText(this).apply { hint = "Fragetext"; setText(existing?.text ?: "") }
+        val etText = EditText(this).apply {
+            hint = "Fragetext"
+            setText(existing?.text ?: "")
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                    android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        }
         val etA = EditText(this).apply { hint = "Option 1"; setText(existing?.options?.getOrNull(0) ?: "") }
         val etB = EditText(this).apply { hint = "Option 2"; setText(existing?.options?.getOrNull(1) ?: "") }
         val etC = EditText(this).apply { hint = "Option 3 (optional)"; setText(existing?.options?.getOrNull(2) ?: "") }
@@ -120,7 +128,9 @@ class QuestionsAdminActivity : AppCompatActivity() {
             .setView(box)
             .setPositiveButton("Speichern") { _, _ ->
                 val qtext = etText.text.toString().trim()
-                val opts = listOf(etA, etB, etC, etD).map { it.text.toString().trim() }.filter { it.isNotEmpty() }
+                val opts = listOf(etA, etB, etC, etD)
+                    .map { it.text.toString().trim() }
+                    .filter { it.isNotEmpty() }
                 val idx = (etCorrect.text.toString().toIntOrNull() ?: 1) - 1
 
                 if (qtext.isEmpty() || opts.size < 2) {
@@ -134,15 +144,23 @@ class QuestionsAdminActivity : AppCompatActivity() {
 
                 val data = mapOf("text" to qtext, "options" to opts, "correctIndex" to idx)
                 val ref = db.collection("courses").document(courseId).collection("questions")
-                val task = if (existing == null) ref.add(data) else ref.document(existing.id).set(data)
-                task.addOnSuccessListener { Toast.makeText(this, "Gespeichert", Toast.LENGTH_SHORT).show() }
-                    .addOnFailureListener { e -> Toast.makeText(this, "Fehler: ${e.message}", Toast.LENGTH_LONG).show() }
+                val task = if (existing == null) ref.add(data)
+                else ref.document(existing.id).set(data)
+                task.addOnSuccessListener {
+                    Toast.makeText(this, "Gespeichert", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener { e ->
+                    Toast.makeText(this, "Fehler: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
             .setNegativeButton("Abbrechen", null)
             .show()
     }
 
-    // ---- Adapter (alle Fehler bereinigt) ----
+    private fun showLoading(show: Boolean) {
+        binding.progress.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    // ---- Adapter ----
     private class QAAdapter(
         private val data: MutableList<QA>,
         private val onMore: (View, QA) -> Unit
@@ -161,10 +179,8 @@ class QuestionsAdminActivity : AppCompatActivity() {
         override fun onBindViewHolder(h: VH, i: Int) {
             val q = data[i]
             h.vb.tvTitle.text = q.text
-
             val optCount = q.options.size
             val correctStr = if (q.correctIndex in q.options.indices) q.options[q.correctIndex] else "-"
-
             h.vb.tvSubtitle.text = "$optCount Optionen • richtig: ${q.correctIndex + 1} ($correctStr)"
             h.vb.btnMore.setOnClickListener { onMore(it, q) }
         }

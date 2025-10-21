@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:padding="12dp">
 
+    <!-- Spinner für Kursauswahl -->
     <Spinner
         android:id="@+id/spCourse"
         android:layout_width="0dp"
@@ -15,22 +16,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Button: Alle Fehler löschen -->
     <Button
         android:id="@+id/btnClearAll"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:minWidth="96dp"
         android:text="Alle löschen"
+        android:backgroundTint="@color/iad_red"
+        android:textColor="@android:color/white"
         app:layout_constraintTop_toTopOf="@id/spCourse"
         app:layout_constraintBottom_toBottomOf="@id/spCourse"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- RecyclerView für Fehlerliste -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvErrors"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/spCourse"
+        app:layout_constraintBottom_toTopOf="@id/btnBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Zurück-Button unten -->
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Zurück"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/iad_green_light"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

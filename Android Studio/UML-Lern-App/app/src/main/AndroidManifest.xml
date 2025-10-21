@@ -15,6 +15,14 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
+        <!-- Profilseite (ohne Launcher) -->
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <!--feedbackseite (ohne Launcher) -->
+        <activity
+            android:name=".FeedbackActivity"
+            android:exported="false" />
 <!-- Admin-Seite (ohne Launcher) -->
         <activity
             android:name=".AdminActivity"

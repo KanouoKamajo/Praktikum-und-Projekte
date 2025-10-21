@@ -29,6 +29,16 @@
             android:text="Frage 1 / 1"
             android:textColor="@color/text_black"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="05:00"
+            android:textAlignment="viewEnd"
+            android:textStyle="bold"
+            android:textColor="@color/btn_red"
+            android:textSize="16sp" />
 
         <!-- NEU: Fortschrittsbalken -->
         <ProgressBar

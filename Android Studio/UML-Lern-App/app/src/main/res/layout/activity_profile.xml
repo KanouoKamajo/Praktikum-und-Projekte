@@ -1,49 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="16dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <!-- Avatar + Name -->
         <ImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="96dp" android:layout_height="96dp"
-            android:src="@mipmap/ic_launcher_round" android:contentDescription="Profilbild"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/ic_launcher_round"
+            android:contentDescription="Profilbild" />
 
         <TextView
             android:id="@+id/tvUsername"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="User" android:textSize="20sp"
-            android:layout_marginTop="12dp" android:textStyle="bold"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Benutzer"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="12dp" />
 
         <TextView
-            android:id="@+id/tvPoints"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Punkte: 0" android:layout_marginTop="8dp"/>
+            android:id="@+id/tvLevelLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Level 0"
+            android:gravity="center"
+            android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/tvLevel"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Level: 0 / 3" android:layout_marginTop="4dp"/>
+        <!-- Fortschritt -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
 
-        <TextView
-            android:id="@+id/tvProgress"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="–" android:layout_marginTop="12dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Aktuelles Level" />
 
+            <TextView
+                android:id="@+id/tvXpRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/1000 XP" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:max="1000"
+            android:progress="0"
+            android:layout_marginTop="6dp" />
+
+        <!-- Punkte-Karten (einfach) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#F2F2F2"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Gesamtpunkte" />
+
+                <TextView
+                    android:id="@+id/tvPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#F2F2F2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nächstes Level" />
+
+                <TextView
+                    android:id="@+id/tvNextLevelXp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1000" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Fortschritt zurücksetzen -->
         <Button
             android:id="@+id/btnResetProgress"
-            android:backgroundTint="@color/background_light"
-            android:textColor="@color/text_black"
-            android:layout_width="match_parent" android:layout_height="48dp"
-            android:text="Fortschritt zurücksetzen" android:layout_marginTop="16dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/iad_green_primary"
+            android:text="Fortschritt zurücksetzen" />
 
-        <Button
-            android:id="@+id/btnBack"
-            android:backgroundTint="@color/btn_red"
-            android:layout_width="match_parent" android:layout_height="48dp"
-            android:text="Zurück" android:layout_marginTop="8dp"/>
+        <!-- Profil bearbeiten & Feedback nebeneinander -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <Button
+                android:id="@+id/btnEditProfile"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/btn_light"
+                android:text="Profil bearbeiten"
+                android:textColor="@color/text_black" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnFeedback"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/btn_light"
+                android:text="Feedback geben"
+                android:textColor="@color/text_black" />
+        </LinearLayout>
+
+        <!-- Unten: Zurück & Abmelden -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/btn_red"
+                android:text="Zurück" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/iad_grey_dark"
+                android:text="Abmelden" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
