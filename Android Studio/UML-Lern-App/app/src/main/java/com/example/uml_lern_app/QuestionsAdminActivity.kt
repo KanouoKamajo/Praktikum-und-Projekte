@@ -15,6 +15,7 @@ import com.example.uml_lern_app.databinding.ItemAdminQuestionBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source   // ⬅️ NEU
 
 class QuestionsAdminActivity : AppCompatActivity() {
 
@@ -54,27 +55,45 @@ class QuestionsAdminActivity : AppCompatActivity() {
 
     private fun subscribeQuestions() {
         showLoading(true)
-        db.collection("courses").document(courseId)
+
+        val q = db.collection("courses").document(courseId)
             .collection("questions")
             .orderBy("text", Query.Direction.ASCENDING)
-            .addSnapshotListener { snap, err ->
+
+        // 1) Sofort: Cache anzeigen (funktioniert offline)
+        q.get(Source.CACHE)
+            .addOnSuccessListener { snap ->
+                render(snap)
                 showLoading(false)
-                if (err != null) {
-                    Toast.makeText(this, "Laden fehlgeschlagen: ${err.message}", Toast.LENGTH_LONG).show()
-                    return@addSnapshotListener
-                }
-                items.clear()
-                snap?.documents?.forEach { d ->
-                    items += QA(
-                        id = d.id,
-                        text = d.getString("text") ?: "",
-                        options = (d.get("options") as? List<*>)?.map { it.toString() } ?: emptyList(),
-                        correctIndex = (d.getLong("correctIndex") ?: 0L).toInt()
-                    )
-                }
-                adapter.notifyDataSetChanged()
-                binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
             }
+            .addOnFailureListener {
+                // Cache leer? -> Nicht schlimm, Listener kommt gleich.
+                showLoading(false)
+            }
+
+        // 2) Live-Updates (Cache & Server). Offline gibt's Events aus dem lokalen Cache.
+        q.addSnapshotListener { snap, err ->
+            showLoading(false)
+            if (err != null) {
+                Toast.makeText(this, "Laden fehlgeschlagen: ${err.message}", Toast.LENGTH_LONG).show()
+                return@addSnapshotListener
+            }
+            if (snap != null) render(snap)
+        }
+    }
+
+    private fun render(snap: com.google.firebase.firestore.QuerySnapshot) {
+        items.clear()
+        snap.documents.forEach { d ->
+            items += QA(
+                id = d.id,
+                text = d.getString("text") ?: "",
+                options = (d.get("options") as? List<*>)?.map { it.toString() } ?: emptyList(),
+                correctIndex = (d.getLong("correctIndex") ?: 0L).toInt()
+            )
+        }
+        adapter.notifyDataSetChanged()
+        binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun showRowMenu(anchor: View, qa: QA) {
@@ -147,7 +166,7 @@ class QuestionsAdminActivity : AppCompatActivity() {
                 val task = if (existing == null) ref.add(data)
                 else ref.document(existing.id).set(data)
                 task.addOnSuccessListener {
-                    Toast.makeText(this, "Gespeichert", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gespeichert (wird synchronisiert …)", Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener { e ->
                     Toast.makeText(this, "Fehler: ${e.message}", Toast.LENGTH_LONG).show()
                 }

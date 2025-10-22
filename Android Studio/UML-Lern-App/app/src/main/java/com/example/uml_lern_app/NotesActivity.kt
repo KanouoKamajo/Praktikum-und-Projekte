@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -21,6 +22,7 @@ import java.util.Locale
  * - CRUD für Notizen des eingeloggten Users
  * - Optionaler Kontext (Intent-Extras): courseId, unitId, questionId
  * - Filter: Alle | Diese Unit | Diese Frage
+ * - Offline: Erst Cache, dann Server
  */
 class NotesActivity : AppCompatActivity() {
 
@@ -140,57 +142,73 @@ class NotesActivity : AppCompatActivity() {
         val updatedAt: Timestamp? = null
     )
 
-    // ----- Laden je nach Filter -----
+    // ----- Offline-fähiges Laden (Cache → Server) -----
     private fun loadNotes() {
         val uid = auth.currentUser?.uid ?: return
         val filter = spFilter.selectedItem?.toString() ?: "Alle"
 
         var q: Query = db.collection("notes").whereEqualTo("userId", uid)
-
         when (filter) {
-            "Diese Unit" -> if (!unitId.isNullOrEmpty()) q = q.whereEqualTo("unitId", unitId)
-            "Diese Frage" -> if (!questionId.isNullOrEmpty()) q = q.whereEqualTo("questionId", questionId)
+            "Diese Unit"   -> if (!unitId.isNullOrEmpty()) q = q.whereEqualTo("unitId", unitId)
+            "Diese Frage"  -> if (!questionId.isNullOrEmpty()) q = q.whereEqualTo("questionId", questionId)
             else -> { /* Alle */ }
         }
-
         q = q.orderBy("updatedAt", Query.Direction.DESCENDING)
 
-        q.get()
+        // 1) Erst: Cache (zeigt sofort – auch offline)
+        q.get(Source.CACHE)
             .addOnSuccessListener { snap ->
-                notes.clear()
-                for (doc in snap.documents) {
-                    notes.add(
-                        Note(
-                            id = doc.id,
-                            userId = doc.getString("userId") ?: "",
-                            courseId = doc.getString("courseId"),
-                            unitId = doc.getString("unitId"),
-                            questionId = doc.getString("questionId"),
-                            scope = doc.getString("scope") ?: "general",
-                            text = doc.getString("text") ?: "",
-                            createdAt = doc.getTimestamp("createdAt"),
-                            updatedAt = doc.getTimestamp("updatedAt")
-                        )
-                    )
-                }
-                adapter.notifyDataSetChanged()
+                render(snap)
+                // 2) Dann: Server (falls online; aktualisiert Liste, wenn neuer)
+                q.get(Source.SERVER)
+                    .addOnSuccessListener { fresh -> render(fresh) }
+                    .addOnFailureListener { e ->
+                        handleLoadFailure(e)
+                    }
             }
-            .addOnFailureListener { e ->
-                if (e is FirebaseFirestoreException &&
-                    e.code == FirebaseFirestoreException.Code.FAILED_PRECONDITION &&
-                    (e.message?.contains("index", true) == true)
-                ) {
-                    Log.e("Notes", "Index fehlt für diese Query.", e)
-                    Toast.makeText(
-                        this,
-                        "Für diesen Filter fehlt ein Firestore-Index. Bitte in der Konsole anlegen.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    Log.e("Notes", "Load failed", e)
-                    Toast.makeText(this, "Fehler beim Laden: ${e.message}", Toast.LENGTH_LONG).show()
-                }
+            .addOnFailureListener {
+                // Cache evtl. leer → direkt Server versuchen
+                q.get(Source.SERVER)
+                    .addOnSuccessListener { snap -> render(snap) }
+                    .addOnFailureListener { e -> handleLoadFailure(e) }
             }
+    }
+
+    private fun handleLoadFailure(e: Exception) {
+        if (e is FirebaseFirestoreException &&
+            e.code == FirebaseFirestoreException.Code.FAILED_PRECONDITION &&
+            (e.message?.contains("index", true) == true)
+        ) {
+            Log.e("Notes", "Index fehlt für diese Query.", e)
+            Toast.makeText(
+                this,
+                "Für diesen Filter fehlt ein Firestore-Index. Bitte in der Konsole anlegen.",
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            Log.e("Notes", "Load failed", e)
+            Toast.makeText(this, "Offline? Zeige Cache-Daten (falls vorhanden).", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun render(snap: com.google.firebase.firestore.QuerySnapshot) {
+        notes.clear()
+        for (doc in snap.documents) {
+            notes.add(
+                Note(
+                    id = doc.id,
+                    userId = doc.getString("userId") ?: "",
+                    courseId = doc.getString("courseId"),
+                    unitId = doc.getString("unitId"),
+                    questionId = doc.getString("questionId"),
+                    scope = doc.getString("scope") ?: "general",
+                    text = doc.getString("text") ?: "",
+                    createdAt = doc.getTimestamp("createdAt"),
+                    updatedAt = doc.getTimestamp("updatedAt")
+                )
+            )
+        }
+        adapter.notifyDataSetChanged()
     }
 
     // ----- Create -----
@@ -216,7 +234,8 @@ class NotesActivity : AppCompatActivity() {
 
         db.collection("notes").add(data)
             .addOnSuccessListener {
-                Toast.makeText(this, "Gespeichert", Toast.LENGTH_SHORT).show()
+                // Auch offline bekommst du bereits eine lokale DocRef; Sync folgt automatisch.
+                Toast.makeText(this, "Gespeichert (wird synchronisiert …)", Toast.LENGTH_SHORT).show()
                 etNote.setText("")
                 etNote.visibility = View.GONE
                 btnSave.visibility = View.GONE
@@ -238,6 +257,7 @@ class NotesActivity : AppCompatActivity() {
                 etNote.visibility = View.GONE
                 btnSave.visibility = View.GONE
                 editingNoteId = null
+                Toast.makeText(this, "Aktualisiert (wird synchronisiert …)", Toast.LENGTH_SHORT).show()
                 loadNotes()
             }
             .addOnFailureListener {
@@ -248,7 +268,10 @@ class NotesActivity : AppCompatActivity() {
     // ----- Delete -----
     private fun deleteNote(id: String) {
         db.collection("notes").document(id).delete()
-            .addOnSuccessListener { loadNotes() }
+            .addOnSuccessListener {
+                Toast.makeText(this, "Gelöscht (wird synchronisiert …)", Toast.LENGTH_SHORT).show()
+                loadNotes()
+            }
             .addOnFailureListener {
                 Toast.makeText(this, "Löschen fehlgeschlagen", Toast.LENGTH_SHORT).show()
             }

@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source   // ⬅️ OFFLINE: Cache/Server wählen
 import kotlin.math.min
 
 class ProfileActivity : AppCompatActivity() {
@@ -31,10 +32,10 @@ class ProfileActivity : AppCompatActivity() {
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         val user = auth.currentUser
 
-        // Benutzername laden (nur Name, keine E-Mail)
+        // Benutzername laden (nur Name, keine E-Mail) – offlinefähig
         loadUsername(user)
 
-        // Punkte & Level anzeigen
+        // Punkte & Level (liegen in SharedPreferences → bereits offlinefähig)
         val totalPoints = prefs.getInt(KEY_PROFILE_POINTS, 0)
         val passedMap = unitOrder.associateWith { id ->
             prefs.getBoolean(KEY_PASSED_PREFIX + id, false)
@@ -83,13 +84,28 @@ class ProfileActivity : AppCompatActivity() {
         }
         if (user == null) { setName(null); return }
 
-        if (!user.displayName.isNullOrBlank()) {
-            setName(user.displayName)
-        } else {
-            db.collection("users").document(user.uid).get()
-                .addOnSuccessListener { doc -> setName(doc.getString("username")) }
-                .addOnFailureListener { setName(null) }
-        }
+        // 1) Sofortanzeige: displayName, wenn vorhanden
+        if (!user.displayName.isNullOrBlank()) setName(user.displayName)
+
+        val docRef = db.collection("users").document(user.uid)
+
+        // 2) Erst Cache (funktioniert offline)
+        docRef.get(Source.CACHE)
+            .addOnSuccessListener { doc ->
+                val cached = doc.getString("username")
+                if (!cached.isNullOrBlank()) setName(cached)
+            }
+            .addOnCompleteListener {
+                // 3) Dann Server (falls online), überschreibt Cache
+                docRef.get(Source.SERVER)
+                    .addOnSuccessListener { fresh ->
+                        val name = fresh.getString("username")
+                        if (!name.isNullOrBlank()) setName(name)
+                    }
+                    .addOnFailureListener {
+                        // Ignorieren – bleibt bei Cache/DisplayName/Gast
+                    }
+            }
     }
 
     // Optional: falls du später Namen aus dieser Seite ändern willst

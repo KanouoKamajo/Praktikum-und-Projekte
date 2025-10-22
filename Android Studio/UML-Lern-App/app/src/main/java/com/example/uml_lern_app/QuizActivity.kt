@@ -26,17 +26,21 @@ class QuizActivity : AppCompatActivity() {
     private var score = 0
     private var isResultMode = false
 
+    // NEU: gemischte Optionen + gemerkter korrekter Index je Frage
+    private val optLists = mutableListOf<List<String>>()  // pro Frage: gemischte Optionen
+    private val optCorrect = mutableListOf<Int>()         // pro Frage: Index der richtigen Option nach Mischen
+
     // Punkte-/Level-Logik
     private val POINTS_PER_CORRECT = 10
     private val PASS_THRESHOLD = 0.70f
 
-    // === TIMER (gesamt fürs Quiz) ===
-    private val QUIZ_TOTAL_MS = 5 * 60 * 1000L           // 5:00 Min (anpassen)
+    // TIMER (gesamt)
+    private val QUIZ_TOTAL_MS = 5 * 60 * 1000L
     private var remainingMs: Long = QUIZ_TOTAL_MS
     private var countDown: CountDownTimer? = null
     private val STATE_REMAINING = "state_remaining"
 
-    // Keys
+    // State
     private val STATE_INDEX = "state_index"
     private val STATE_SCORE = "state_score"
 
@@ -56,37 +60,34 @@ class QuizActivity : AppCompatActivity() {
         val quizTitle = intent.getStringExtra("quizTitle") ?: titleForCourse(courseId)
         binding.tvQuizTitle.text = quizTitle
 
-        // Timer-Status wiederherstellen
+        // Timer-Status
         remainingMs = savedInstanceState?.getLong(STATE_REMAINING, QUIZ_TOTAL_MS) ?: QUIZ_TOTAL_MS
         updateTimerText(remainingMs)
 
         // 1) Fragen laden
         fullPool = loadQuestions(courseId)
 
-        // 2) Falsche zuerst
+        // 2) Falsche zuerst (Set)
         val previouslyWrong = loadWrongSet(courseId)
 
         // 3) Anzahl
         val requestedCount = intent.getIntExtra("questionCount", -1)
 
         if (savedInstanceState == null) {
-            questions = buildSessionQuestions(previouslyWrong, fullPool)
+            questions = buildSessionQuestions(previouslyWrong, fullPool)   // inkl. Shuffle
             if (requestedCount in 1..questions.size) {
                 questions = questions.take(requestedCount).toMutableList()
-                showQuestion()
-            } else {
-                promptForQuestionCount(questions.size) { chosen ->
-                    questions = questions.take(chosen).toMutableList()
-                    showQuestion()
-                }
             }
+            prepareShuffledOptions()  // << Antworten pro Frage mischen
+            showQuestion()
         } else {
             currentIndex = savedInstanceState.getInt(STATE_INDEX, 0)
             score = savedInstanceState.getInt(STATE_SCORE, 0)
-            questions = buildSessionQuestions(previouslyWrong, fullPool)
+            questions = buildSessionQuestions(previouslyWrong, fullPool)   // inkl. Shuffle
             if (requestedCount in 1..questions.size) {
                 questions = questions.take(requestedCount).toMutableList()
             }
+            prepareShuffledOptions()
             showQuestion()
         }
 
@@ -110,9 +111,10 @@ class QuizActivity : AppCompatActivity() {
             }
 
             val selectedIndex = binding.rgOptions.indexOfChild(findViewById<RadioButton>(checkedId))
-            val currentQ = questions[currentIndex]
+            // NEU: korrekt gegen optCorrect prüfen (nicht gegen originalen Index)
+            val correct = (selectedIndex == optCorrect[currentIndex])
 
-            val correct = (selectedIndex == currentQ.correctIndex)
+            val currentQ = questions[currentIndex]
             if (correct) {
                 score++
                 addProfilePoints(POINTS_PER_CORRECT)
@@ -146,7 +148,27 @@ class QuizActivity : AppCompatActivity() {
         outState.putLong(STATE_REMAINING, remainingMs)
     }
 
-    // === TIMER ===
+    // --- Zufallslogik ---
+
+    /** Mischt Reihenfolge der Fragen (falsche zuerst, beide Blöcke zufällig). */
+    private fun buildSessionQuestions(previouslyWrong: Set<String>, pool: List<QuizQuestion>): MutableList<QuizQuestion> {
+        val wrongFirst = pool.filter { it.question in previouslyWrong }.shuffled()
+        val rest = pool.filter { it.question !in previouslyWrong }.shuffled()
+        return (wrongFirst + rest).toMutableList()
+    }
+
+    /** Erzeugt für jede Frage eine gemischte Optionsliste und merkt den neuen korrekten Index. */
+    private fun prepareShuffledOptions() {
+        optLists.clear()
+        optCorrect.clear()
+        questions.forEach { q ->
+            val pairs = q.options.mapIndexed { i, s -> i to s }.shuffled()
+            optLists += pairs.map { it.second }
+            optCorrect += pairs.indexOfFirst { it.first == q.correctIndex }
+        }
+    }
+
+    // --- TIMER ---
     private fun startTimer() {
         stopTimer()
         countDown = object : CountDownTimer(remainingMs, 1000L) {
@@ -176,18 +198,10 @@ class QuizActivity : AppCompatActivity() {
         val totalSec = (ms / 1000L).toInt()
         val mm = totalSec / 60
         val ss = totalSec % 60
-        // TextView in XML: @id/tvTimer (siehe unten)
         binding.tvTimer?.text = String.format("%02d:%02d", mm, ss)
     }
 
-    /** Session bauen: zuerst falsch, dann Rest gemischt. */
-    private fun buildSessionQuestions(previouslyWrong: Set<String>, pool: List<QuizQuestion>): MutableList<QuizQuestion> {
-        val wrongFirst = pool.filter { it.question in previouslyWrong }
-        val rest = pool.filter { it.question !in previouslyWrong }.shuffled()
-        return (wrongFirst + rest).toMutableList()
-    }
-
-    /** Dialog: Anzahl Fragen. */
+    // --- UI-Flow ---
     private fun promptForQuestionCount(maxCount: Int, onChosen: (Int) -> Unit) {
         val til = TextInputLayout(this).apply {
             isHintEnabled = true
@@ -212,7 +226,6 @@ class QuizActivity : AppCompatActivity() {
             .show()
     }
 
-    /** Aktuelle Frage. */
     private fun showQuestion() {
         isResultMode = false
 
@@ -223,8 +236,10 @@ class QuizActivity : AppCompatActivity() {
         val progress = ((currentIndex) * 100f / questions.size).toInt()
         binding.progressBar.progress = progress
 
+        // NEU: gemischte Optionen für diese Frage verwenden
+        val opts = optLists[currentIndex]
         binding.rgOptions.removeAllViews()
-        q.options.forEach { opt ->
+        opts.forEach { opt ->
             val rb = RadioButton(this).apply {
                 text = opt
                 textSize = 16f
@@ -232,18 +247,16 @@ class QuizActivity : AppCompatActivity() {
             }
             binding.rgOptions.addView(rb)
         }
+
         binding.tvResult.text = ""
         binding.rgOptions.clearCheck()
         binding.btnNext.text = if (currentIndex == questions.size - 1) "Ergebnis anzeigen" else "Weiter"
         binding.btnBack.visibility = View.GONE
         binding.btnNext.isEnabled = true
         binding.btnErrorList.visibility = View.GONE
-
-        // Timer-Anzeige sichtbar halten
         binding.tvTimer?.visibility = View.VISIBLE
     }
 
-    /** Ergebnis. */
     private fun showResult(courseId: String, unitId: String?) {
         isResultMode = true
         stopTimer()
@@ -273,7 +286,7 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
-    // ---------------------- SharedPreferences helpers ----------------------
+    // --- SharedPreferences helpers ---
     private fun prefs() = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     private fun loadWrongSet(courseId: String): Set<String> {
@@ -313,7 +326,7 @@ class QuizActivity : AppCompatActivity() {
         prefs().edit().putBoolean(KEY_PASSED_PREFIX + unitId, passed).apply()
     }
 
-    // ---------------------- Fragen & Titel ----------------------
+    // --- Fragen & Titel ---
     private fun loadQuestions(courseId: String): List<QuizQuestion> = when (courseId) {
         "uml_basics" -> listOf(
             QuizQuestion("Wofür steht UML?",
