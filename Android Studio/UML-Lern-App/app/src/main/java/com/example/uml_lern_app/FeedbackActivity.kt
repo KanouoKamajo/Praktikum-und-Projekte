@@ -33,20 +33,23 @@ class FeedbackActivity : AppCompatActivity() {
             val uid = user?.uid ?: "anonymous"
             val name = user?.displayName?.takeIf { it.isNotBlank() } ?: "Gast"
 
-            // Feedback in Firestore speichern (optional, aber praktisch)
+            // Optional: Doppel-Taps vermeiden
+            binding.btnSend.isEnabled = false
+
+            // Feedback in Firestore speichern
             val data = mapOf(
                 "ownerId" to uid,
                 "username" to name,
                 "message" to text,
                 "createdAt" to Timestamp.now()
             )
+
             db.collection("feedback").add(data)
-                .addOnSuccessListener {
+                .addOnCompleteListener {
+                    // **WICHTIG:** Feld JETZT leeren, damit es bereits leer ist, wenn der Dialog erscheint
+                    binding.etFeedback.setText("")
                     showThanks(name)
-                }
-                .addOnFailureListener {
-                    // Auch bei Fehler das Danke-Popup zeigen, wenn du magst:
-                    showThanks(name)
+                    binding.btnSend.isEnabled = true
                 }
         }
     }
@@ -56,8 +59,9 @@ class FeedbackActivity : AppCompatActivity() {
             .setTitle("Danke!")
             .setMessage("Vielen Dank, $username, für Ihre Nachricht.")
             .setPositiveButton("OK") { _, _ ->
+                // Dein ursprüngliches Leeren bleibt bestehen – doppelt schadet nicht
                 binding.etFeedback.setText("")
-                finish() // zurück nach OK
+                finish()
             }
             .show()
     }
