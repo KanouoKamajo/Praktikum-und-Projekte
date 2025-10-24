@@ -96,7 +96,7 @@ class AdminActivity : AppCompatActivity() {
                     }
                     .addOnFailureListener {
                         if (!isAdmin) {
-                            Toast.makeText(this, "Kein Admin-Zugriff (offline & kein Cache).", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Sie sind kein Admin also kein Zugriff (offline & kein Cache).", Toast.LENGTH_LONG).show()
                             finish()
                         }
                     }

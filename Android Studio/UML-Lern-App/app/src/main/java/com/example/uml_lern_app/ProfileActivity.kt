@@ -10,6 +10,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source   // ⬅️ OFFLINE: Cache/Server wählen
+import kotlin.jvm.java
 import kotlin.math.min
 
 class ProfileActivity : AppCompatActivity() {
@@ -34,6 +35,10 @@ class ProfileActivity : AppCompatActivity() {
 
         // Benutzername laden (nur Name, keine E-Mail) – offlinefähig
         loadUsername(user)
+        binding.btnHelpContact.setOnClickListener {
+            startActivity(Intent(this, HelpContactActivity::class.java))
+        }
+
 
         // Punkte & Level (liegen in SharedPreferences → bereits offlinefähig)
         val totalPoints = prefs.getInt(KEY_PROFILE_POINTS, 0)

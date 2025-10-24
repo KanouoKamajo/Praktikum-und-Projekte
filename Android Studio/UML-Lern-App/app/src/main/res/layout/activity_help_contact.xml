@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:id="@+id/containerRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Titel -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hilfe &amp; Kontakt"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Info-Text -->
+        <TextView
+            android:id="@+id/tvIntro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hier findest du unsere Kontaktdaten und Schnellzugriffe."
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />
+
+        <!-- E-Mail -->
+        <TextView
+            android:id="@+id/tvEmailLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="E-Mail:"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/tvEmailValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="support@uml-app.example" />
+
+        <!-- Telefon -->
+        <Button
+            android:id="@+id/btnSendEmail"
+            android:layout_width="248dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/btn_light"
+            android:text="E-Mail schreiben"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/tvPhoneLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Telefon:"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/tvPhoneValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+49 123 456789" />
+
+        <Button
+            android:id="@+id/btnCall"
+            android:layout_width="255dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8px"
+            android:backgroundTint="@color/btn_light"
+            android:text="Anrufen"
+            android:textColor="@android:color/black" />
+
+        <!-- Website -->
+        <TextView
+            android:id="@+id/tvWebLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Website:"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/tvWebValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="https://uml-app.example" />
+
+        <Button
+            android:id="@+id/btnOpenWebsite"
+            android:layout_width="260dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/btn_light"
+            android:text="Website öffnen"
+            android:textColor="@android:color/black" />
+
+        <!-- Abstand -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Untere Buttons: Zurück | Einstellungen -->
+        <LinearLayout
+            android:id="@+id/bottomButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Zurück"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@android:color/black" />
+
+            <View
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Einstellungen"
+                android:backgroundTint="@android:color/holo_blue_dark"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+    </LinearLayout>
+</ScrollView>
